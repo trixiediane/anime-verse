@@ -29,86 +29,64 @@
                 from MyAnimeList
             </a>
         </div>
-        <div class="row">
-            <div class="col-12 col-md-4">
-                <div class="card">
-                    <img class="card-img-top" src="img/photos/unsplash-2.jpg" alt="Unsplash">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">Card with image and button</h5>
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                            card's content.</p>
-                        <a href="#" class="btn btn-primary">Go somewhere</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-4">
-                <div class="card">
-                    <img class="card-img-top" src="img/photos/unsplash-2.jpg" alt="Unsplash">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">Card with image and button</h5>
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                            card's content.</p>
-                        <a href="#" class="btn btn-primary">Go somewhere</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-4">
-                <div class="card">
-                    <img class="card-img-top" src="img/photos/unsplash-2.jpg" alt="Unsplash">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">Card with image and button</h5>
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                            card's content.</p>
-                        <a href="#" class="btn btn-primary">Go somewhere</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-4">
-                <div class="card">
-                    <img class="card-img-top" src="img/photos/unsplash-2.jpg" alt="Unsplash">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">Card with image and button</h5>
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                            card's content.</p>
-                        <a href="#" class="btn btn-primary">Go somewhere</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-4">
-                <div class="card">
-                    <img class="card-img-top" src="img/photos/unsplash-2.jpg" alt="Unsplash">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">Card with image and button</h5>
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                            card's content.</p>
-                        <a href="#" class="btn btn-primary">Go somewhere</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-4">
-                <div class="card">
-                    <img class="card-img-top" src="img/photos/unsplash-2.jpg" alt="Unsplash">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">Card with image and button</h5>
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                            card's content.</p>
-                        <a href="#" class="btn btn-primary">Go somewhere</a>
-                    </div>
-                </div>
-            </div>
+        <div id="topAnimeRow" class="row">
         </div>
-
     </div>
+    <script>
+        $(document).ready(function() {
+            $.ajax({
+                url: '/top-anime',
+                type: 'GET',
+                success: function(data) {
+                    console.log("Data received: ", data); // Log the response to console
+                    // Handle the data as needed
+
+                    $("#topAnimeRow").empty();
+                    data.data.forEach(anime => {
+                        let synopsis = anime.synopsis;
+                        const maxLength =
+                        100; // Define the max length of the synopsis to display initially
+
+                        if (synopsis.length > maxLength) {
+                            let shortSynopsis = synopsis.substring(0, maxLength) + '...';
+                            synopsis = `
+                        <span class="short-synopsis">${shortSynopsis}</span>
+                        <span class="full-synopsis" style="display:none;">${synopsis}</span>
+                        <a href="#" class="read-more">Read more</a>`;
+                        }
+
+                        $("#topAnimeRow").append(`
+                    <div class="col-12 col-md-3">
+                        <div class="card">
+                            <img class="card-img-top" src="${anime.images.jpg.large_image_url}" alt="Anime Image">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">${anime.title}</h5>
+                            </div>
+                            <div class="card-body" style="max-height: 200px; overflow-y: auto;">
+                                <p class="card-text">${synopsis}</p>
+                                <a href="#" class="btn btn-primary">Go somewhere</a>
+                            </div>
+                        </div>
+                    </div>
+                `);
+                    });
+
+                    // Add event listener for "Read more" links
+                    $(document).on('click', '.read-more', function(e) {
+                        e.preventDefault();
+                        $(this).siblings('.short-synopsis').hide();
+                        $(this).siblings('.full-synopsis').show();
+                        $(this).parent().css('max-height',
+                        'none'); // Remove max-height to allow full display
+                        $(this).hide(); // Hide the "Read more" link
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error: ", error); // Log any errors to console
+                    console.error("XHR: ", xhr); // Log the full XHR object
+                    console.error("Status: ", status); // Log the status
+                }
+            });
+        });
+    </script>
 @endsection
