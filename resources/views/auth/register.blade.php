@@ -41,13 +41,13 @@
                                     <form method="POST" action="{{ route('register') }}">
                                         @csrf
                                         <div class="mb-3">
-                                            <label class="form-label">Full name</label>
+                                            <label class="form-label">Username</label>
                                             <input
-                                                class="form-control form-control-lg @error('name') is-invalid @enderror"
-                                                type="text" name="name" placeholder="Enter your name"
-                                                value="{{ old('name') }}" required autocomplete="name" autofocus />
+                                                class="form-control form-control-lg @error('username') is-invalid @enderror"
+                                                type="text" name="username" placeholder="Enter your username"
+                                                value="{{ old('username') }}" required autocomplete="username" autofocus />
 
-                                            @error('name')
+                                            @error('username')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
                                                 </span>

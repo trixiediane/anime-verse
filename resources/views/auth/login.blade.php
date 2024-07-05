@@ -38,16 +38,33 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="m-sm-3">
-                                    <form>
+                                    <form method="POST" action="{{ route('login') }}">
+                                        @csrf
                                         <div class="mb-3">
-                                            <label class="form-label">Email</label>
-                                            <input class="form-control form-control-lg" type="email" name="email"
-                                                placeholder="Enter your email" />
+                                            <label class="form-label">Username</label>
+                                            <input
+                                                class="form-control form-control-lg @error('username') is-invalid @enderror"
+                                                type="text" name="username" placeholder="Enter your username"
+                                                value="{{ old('username') }}" autocomplete="username" autofocus>
+
+                                            @error('username')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Password</label>
-                                            <input class="form-control form-control-lg" type="password" name="password"
-                                                placeholder="Enter your password" />
+                                            <input
+                                                class="form-control form-control-lg @error('password') is-invalid @enderror"
+                                                type="password" name="password" placeholder="Enter your password"
+                                                autocomplete="current-password">
+
+                                            @error('password')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
                                         </div>
                                         <div>
                                             <div class="form-check align-items-center">
@@ -58,7 +75,9 @@
                                             </div>
                                         </div>
                                         <div class="d-grid gap-2 mt-3">
-                                            <a href="index.html" class="btn btn-lg btn-primary">Sign in</a>
+                                            <button type="submit" class="btn btn-lg btn-primary">
+                                                {{ __('Sign in') }}
+                                            </button>
                                         </div>
                                     </form>
                                 </div>
