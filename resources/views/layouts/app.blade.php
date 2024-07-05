@@ -13,8 +13,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel="shortcut icon" href="img/icons/icon-48x48.png" />
 
-    <link rel="canonical" href="https://demo-basic.adminkit.io/ui-cards.html" />
-
     <title>Cards | AdminKit Demo</title>
 
     <link href="css/app.css" rel="stylesheet">
@@ -85,7 +83,7 @@
                         </a>
                     </li>
 
-                    <li class="sidebar-item active">
+                    <li class="sidebar-item">
                         <a class="sidebar-link" href="ui-cards.html">
                             <i class="align-middle" data-feather="grid"></i> <span class="align-middle">Cards</span>
                         </a>
