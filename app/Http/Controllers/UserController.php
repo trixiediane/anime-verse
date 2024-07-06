@@ -6,6 +6,7 @@ use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
@@ -81,6 +82,23 @@ class UserController extends Controller
                 'username' => $request->username,
                 'email' => $request->email
             ]);
+
+            if ($request->has('old_password') && $request->has('new_password') && $request->has('confirm_password')) {
+                if (Hash::check($request->old_password, $user->password)) {
+
+                    if ($request->new_password === $request->confirm_password) {
+                        $user->update([
+                            'password' => $request->new_password,
+                        ]);
+
+                        return response()->json(['text' => 'Password updated successfully', 'status' => 200]);
+                    } else {
+                        return response()->json(['text' => 'New password and confirm password do not match', 'status' => 400]);
+                    }
+                } else {
+                    return response()->json(['text' => 'Old password does not match', 'status' => 400]);
+                }
+            }
 
             if ($request->hasFile('profile_picture')) {
                 $avatar = $request->file('profile_picture');

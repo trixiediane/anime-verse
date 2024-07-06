@@ -89,15 +89,27 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="password" class="form-label">Password</label>
-                                <input id="password" type="password" class="form-control" name="password"
-                                    autocomplete="new-password">
+                                <label for="old_password" class="form-label">Old Password</label>
+                                <input id="old_password" type="password" class="form-control" name="old_password"
+                                    autocomplete="current-password">
+                                <i id="errors" class="errors text-danger font-weight-bold" data-field="old_password"
+                                    style="display:none"></i>
                             </div>
 
                             <div class="mb-3">
-                                <label for="password_confirmation" class="form-label">Confirm Password</label>
-                                <input id="password_confirmation" type="password" class="form-control"
-                                    name="password_confirmation" autocomplete="new-password">
+                                <label for="new_password" class="form-label">New Password</label>
+                                <input id="new_password" type="password" class="form-control" name="new_password"
+                                    autocomplete="new-password">
+                                <i id="errors" class="errors text-danger font-weight-bold" data-field="new_password"
+                                    style="display:none"></i>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="confirm_password" class="form-label">Confirm Password</label>
+                                <input id="confirm_password" type="password" class="form-control"
+                                    name="confirm_password" autocomplete="new-password">
+                                <i id="errors" class="errors text-danger font-weight-bold"
+                                    data-field="confirm_password" style="display:none"></i>
                             </div>
 
                             <div class="mb-3">
@@ -108,6 +120,7 @@
                             <button type="button" onclick="updateUser()" class="btn btn-primary">Update Profile</button>
                         </div>
                     </form>
+
                 </div>
             </div>
         </div>
@@ -120,6 +133,9 @@
         function updateUser() {
             let username = $("#username").val();
             let email = $("#email").val();
+            let oldPassword = $("#old_password").val(); // Add old_password field
+            let newPassword = $("#new_password").val(); // Add new_password field
+            let confirmPassword = $("#confirm_password").val(); // Add confirm_password field
             let attachment = $('#profile_pic')[0].files[0];
             let csrf = $('meta[name="csrf-token"]').attr('content');
 
@@ -127,6 +143,13 @@
             let formData = new FormData();
             formData.append('email', email);
             formData.append('username', username);
+
+            if (oldPassword) {
+                formData.append('old_password', oldPassword); // Add old_password to formData
+                formData.append('new_password', newPassword); // Add new_password to formData
+                formData.append('confirm_password', confirmPassword); // Add confirm_password to formData
+            }
+
             if (attachment) {
                 formData.append('profile_picture', attachment);
             }
@@ -164,6 +187,9 @@
                             });
                         });
                     }
+                    $("#old_password").val('');
+                    $("#new_password").val('');
+                    $("#confirm_password").val('');
                     $(".errors").hide();
                 },
                 error: function(response) {
@@ -180,6 +206,7 @@
                 }
             });
         }
+
 
         function editUser(id) {
             var csrf = $('meta[name="csrf-token"]').attr('content');
