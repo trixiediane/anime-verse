@@ -245,7 +245,7 @@
                                 <i class="align-middle" data-feather="settings"></i>
                             </a>
 
-                            <a class="nav-link dropdown-toggle d-none d-sm-inline-block" href="#"
+                            <a id="userNav" class="nav-link dropdown-toggle d-none d-sm-inline-block" href="#"
                                 data-bs-toggle="dropdown">
                             </a>
                             <div class="dropdown-menu dropdown-menu-end">
