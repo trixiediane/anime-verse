@@ -10,6 +10,8 @@
     <meta name="keywords"
         content="adminkit, bootstrap, bootstrap 5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web">
 
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel="shortcut icon" href="{{ asset('img/icons/icon-48x48.png') }}" />
 
@@ -21,6 +23,36 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <!-- JQuery Plugin -->
     <script src="{{ asset('assets/plugins/jquery/jquery.min.js') }}"></script>
+    <script>
+        @php
+            // Get only specific data from user. Null safe.
+            $user = auth()->check() ? json_encode(Illuminate\Support\Arr::only(auth()->user()->toArray(), ['id', 'username', 'email'])) : null;
+        @endphp
+        @if (auth()->check())
+            //if(localStorage.getItem('user_data') === null) {
+            $.ajax({
+                type: "POST",
+                url: "{{ route('me') }}",
+                async: false,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    localStorage.setItem('user_data', JSON.stringify(response));
+                }
+            });
+            //}
+        @else
+            window.location.href = "{{ route('login') }}";
+        @endif
+        // Load user_data to a variable
+        var user_data = JSON.parse(localStorage.getItem('user_data'));
+        console.log(user_data.id);
+    </script>
+
+    <!-- Custom page scripts stack -->
+    @stack('styles')
+    @stack('scripts')
 </head>
 
 <body>
@@ -38,8 +70,8 @@
 
                     <li class="sidebar-item @if (Route::is('home')) active @endif">
                         <a class="sidebar-link" href="{{ route('home') }}">
-                            <i class="align-middle" data-feather="sliders"></i> <span
-                                class="align-middle">Top Anime</span>
+                            <i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Top
+                                Anime</span>
                         </a>
                     </li>
 
@@ -221,8 +253,9 @@
 
                             </a>
                             <div class="dropdown-menu dropdown-menu-end">
-                                <a class="dropdown-item" href="pages-profile.html"><i class="align-middle me-1"
-                                        data-feather="user"></i> Profile</a>
+                                <a class="dropdown-item" href="{{ route('user.index') }}">
+                                    <i class="align-middle me-1" data-feather="user"></i> Profile
+                                </a>
                                 <a class="dropdown-item" href="#"><i class="align-middle me-1"
                                         data-feather="pie-chart"></i> Analytics</a>
                                 <div class="dropdown-divider"></div>
@@ -275,6 +308,7 @@
         </div>
     </div>
     <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ asset('js/sweetalert2.js') }}"></script>
 
     <!-- JQuery Plugin -->
     <script src="{{ asset('assets/plugins/jquery/jquery.min.js') }}"></script>
