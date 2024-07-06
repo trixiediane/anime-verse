@@ -1,26 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-    {{-- <div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Dashboard') }}</div>
-
-                <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-
-                    {{ __('You are logged in!') }}
-                </div>
-            </div>
-        </div>
-    </div>
-</div> --}}
-
     <div class="container-fluid p-0">
         <div class="mb-3">
             <h1 class="h3 d-inline align-middle">Top Anime</h1>
@@ -110,9 +90,12 @@
                                 return `<a href="${genre.url}" class="badge ${randomBg} me-1 my-1">${genre.name}</a>`;
                             }).join('');
 
+                            let animeUrl =
+                            `/anime/show/${anime.mal_id}`; // Construct the URL for the anime show page
+
                             $("#topAnimeRow").append(`
-                        <div class="col-12 col-md-2 mt-4">
-                            <div class="card h-100"> <!-- Set a fixed height -->
+                        <div class="col-12 col-md-3 col-sm-2 mt-4">
+                            <div class="card h-100">
                                 <img class="card-img-top" src="${anime.images.jpg.large_image_url}" alt="Anime Image">
                                 <div class="card-header">
                                     <h5 class="card-title mb-0">${anime.title}</h5>
@@ -124,7 +107,7 @@
                                 </div>
                                 <hr class="color-gray">
                                 <div class="card-footer">
-                                    <a href="#" class="btn btn-primary">Read More</a>
+                                    <a href="${animeUrl}" class="btn btn-primary">Read More</a>
                                 </div>
                             </div>
                         </div>
@@ -138,7 +121,6 @@
                             ];
                             return colors[Math.floor(Math.random() * colors.length)];
                         }
-
                     },
                     error: function(xhr, status, error) {
                         console.error("Error: ", error); // Log any errors to console

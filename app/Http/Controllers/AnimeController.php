@@ -8,6 +8,21 @@ use Illuminate\Http\Request;
 
 class AnimeController extends Controller
 {
+    public function show($id)
+    {
+        $client = new Client();
+        $url = 'https://api.jikan.moe/v4/anime/' . $id . '/full';
+
+        try {
+            $response = $client->get($url, ['verify' => false]);
+            $result = json_decode($response->getBody()->getContents(), true);
+
+            return view('anime.show', ['anime' => $result['data']]);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
     public function getTopAnime(Request $request)
     {
         $client = new Client();
