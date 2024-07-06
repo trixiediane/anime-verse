@@ -26,7 +26,7 @@
     <script>
         @php
             // Get only specific data from user. Null safe.
-            $user = auth()->check() ? json_encode(Illuminate\Support\Arr::only(auth()->user()->toArray(), ['id', 'username', 'email'])) : null;
+            $user = auth()->check() ? json_encode(Illuminate\Support\Arr::only(auth()->user()->toArray(), ['id', 'username', 'email', 'profile_picture'])) : null;
         @endphp
         @if (auth()->check())
             //if(localStorage.getItem('user_data') === null) {
@@ -47,7 +47,7 @@
         @endif
         // Load user_data to a variable
         var user_data = JSON.parse(localStorage.getItem('user_data'));
-        console.log(user_data.id);
+        // console.log(user_data.id);
     </script>
 
     <!-- Custom page scripts stack -->
@@ -247,10 +247,6 @@
 
                             <a class="nav-link dropdown-toggle d-none d-sm-inline-block" href="#"
                                 data-bs-toggle="dropdown">
-                                <img src="{{ asset('img/avatars/avatar.jpg') }}" class="avatar img-fluid rounded me-1"
-                                    alt="Charles Hall" />
-                                <span class="text-dark">Charles Hall</span>
-
                             </a>
                             <div class="dropdown-menu dropdown-menu-end">
                                 <a class="dropdown-item" href="{{ route('user.index') }}">
@@ -312,6 +308,15 @@
 
     <!-- JQuery Plugin -->
     <script src="{{ asset('assets/plugins/jquery/jquery.min.js') }}"></script>
+
+    <script>
+        var profPic = "storage/" + user_data.profile_picture;
+        $("#userNav").empty();
+        $("#userNav").append(`
+            <img src="{{ asset('${profPic}') }}" class="avatar img-fluid rounded me-1" alt="Charles Hall" />
+            <span class="text-dark">${user_data.username}</span>
+        `);
+    </script>
 </body>
 
 </html>

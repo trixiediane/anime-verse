@@ -24,7 +24,7 @@ class UserController extends Controller
     public function getUserDetails()
     {
         // https://laravel.com/docs/10.x/eloquent-relationships#eager-loading-specific-columns
-        $user = auth()->user()->only('id', 'username', 'email');
+        $user = auth()->user()->only('id', 'username', 'email', 'profile_picture');
 
         return response()->json($user);
     }
