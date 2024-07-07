@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AnimeController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +15,10 @@ Auth::routes();
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::get('/top-anime', [AnimeController::class, 'getTopAnime'])->name('top-anime');
+});
+
+Route::group(['middleware' => 'auth', 'prefix' => 'category'], function () {
+    Route::get('categories-list', [CategoryController::class, 'list'])->name('category.list');
 });
 
 Route::group(['middleware' => 'auth', 'prefix' => 'anime'], function () {

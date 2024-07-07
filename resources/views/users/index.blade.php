@@ -27,6 +27,11 @@
                         </div> --}}
                     </div>
                     <hr class="my-0" />
+                    <div class="card-body">
+                        <h5 class="h6 card-title">My Categories</h5>
+                        <a href="#" class="badge bg-primary me-1 my-1">HTML</a>
+                        <a href="#" class="badge bg-primary me-1 my-1">JavaScript</a>
+                    </div>
                 </div>
             </div>
 
@@ -69,10 +74,10 @@
 
                             <div class="mb-3">
                                 <label for="confirm_password" class="form-label">Confirm Password</label>
-                                <input id="confirm_password" type="password" class="form-control"
-                                    name="confirm_password" autocomplete="new-password">
-                                <i id="errors" class="errors text-danger font-weight-bold"
-                                    data-field="confirm_password" style="display:none"></i>
+                                <input id="confirm_password" type="password" class="form-control" name="confirm_password"
+                                    autocomplete="new-password">
+                                <i id="errors" class="errors text-danger font-weight-bold" data-field="confirm_password"
+                                    style="display:none"></i>
                             </div>
 
                             <div class="mb-3">
@@ -91,7 +96,8 @@
 
     <script>
         var id = user_data.id;
-        editUser(id);
+        editUser();
+        categories();
 
         function updateUser() {
             let username = $("#username").val();
@@ -171,7 +177,7 @@
         }
 
 
-        function editUser(id) {
+        function editUser() {
             var csrf = $('meta[name="csrf-token"]').attr('content');
             $.ajax({
                 url: "{{ route('user.edit', ['id' => 'id']) }}".replace('id', id),
@@ -192,6 +198,29 @@
                         icon: 'error',
                         confirmButtonText: 'Ok',
                     });
+                }
+            });
+        }
+
+        function categories() {
+            let csrf = $('meta[name="csrf-token"]').attr('content');
+
+            $.ajax({
+                type: "GET",
+                url: "{{ route('category.list') }}",
+                data: {
+                    user_id: id
+                },
+                headers: {
+                    "X-CSRF-TOKEN": csrf
+                },
+                dataType: "json",
+                success: function(response) {
+                    console.log("Success:", response);
+
+                },
+                error: function(response) {
+                    console.log("Error:", response);
                 }
             });
         }
