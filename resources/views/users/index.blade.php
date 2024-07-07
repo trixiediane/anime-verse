@@ -1,5 +1,6 @@
 @extends('layouts.app')
 
+<link href="{{ asset('css/getbootstrap.css') }}" rel="stylesheet">
 @section('content')
     <div class="container-fluid p-0">
         <div class="mb-3">
@@ -20,17 +21,23 @@
                         <h5 class="card-title mb-0">{{ $user->username }}</h5>
                         <div class="text-muted mb-2">{{ $user->email }}</div>
 
-                        {{-- <div>
-                            <a class="btn btn-primary btn-sm" href="#">Follow</a>
-                            <a class="btn btn-primary btn-sm" href="#"><span data-feather="message-square"></span>
-                                Message</a>
-                        </div> --}}
+                        <div>
+                            {{-- <a class="btn btn-primary btn-sm" href="#">Follow</a> --}}
+                            {{-- <a class="btn btn-primary btn-sm" href="#"><span data-feather="message-square"></span>
+                                Message</a> --}}
+                        </div>
                     </div>
                     <hr class="my-0" />
                     <div class="card-body">
-                        <h5 class="h6 card-title">My Categories</h5>
-                        <a href="#" class="badge bg-primary me-1 my-1">HTML</a>
-                        <a href="#" class="badge bg-primary me-1 my-1">JavaScript</a>
+                        <a href="" class="card-link float-md-end mb-3" data-toggle="modal"
+                            data-target="#addCategoryModal">
+                            Add Category
+                        </a>
+                        <h5 class="h6 card-title">My Categories
+                        </h5>
+                        <ul id="categoryList" class="list-unstyled mb-0">
+                            {{-- <li class="mb-1"><a href="#">staciehall.co</a></li> --}}
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -94,6 +101,37 @@
         </div>
     </div>
 
+    <!-- Modal -->
+    <div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog" aria-labelledby="addCategoryModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCategoryModalLabel">Add a Category</h5>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name</label>
+                        <input name="name" type="text" class="form-control" id="name" value="">
+                        <i id="errors" class="errors text-danger font-weight-bold" data-field="name"
+                            style="display:none"></i>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <input name="description" type="text" class="form-control" id="description" value="">
+                        <i id="errors" class="errors text-danger font-weight-bold" data-field="description"
+                            style="display:none"></i>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="closeCategoryModal" type="button" class="btn btn-secondary"
+                        data-dismiss="modal">Close</button>
+                    <button type="button" onclick="createCategory()" class="btn btn-primary">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
         var id = user_data.id;
         editUser();
@@ -176,7 +214,6 @@
             });
         }
 
-
         function editUser() {
             var csrf = $('meta[name="csrf-token"]').attr('content');
             $.ajax({
@@ -217,12 +254,81 @@
                 dataType: "json",
                 success: function(response) {
                     console.log("Success:", response);
-
+                    $("#categoryList").empty();
+                    response.data.forEach(category => {
+                        $("#categoryList").append(`
+                        <li class="mb-1"><a href="#">${category.name}</a></li>
+                    `);
+                    });
                 },
                 error: function(response) {
                     console.log("Error:", response);
                 }
             });
         }
+
+
+        function createCategory() {
+            let name = $("#name").val();
+            let description = $("#description").val();
+            let csrf = $('meta[name="csrf-token"]').attr('content');
+
+            $.ajax({
+                type: "POST",
+                url: "{{ route('category.store') }}",
+                headers: {
+                    "X-CSRF-TOKEN": csrf
+                },
+                data: {
+                    user_id: id,
+                    name: name,
+                    description: description
+                },
+                dataType: "json",
+                success: function(response) {
+                    console.log("Success:", response);
+                    if (response.status == 200) {
+                        Swal.fire({
+                            title: "Success",
+                            text: response.message,
+                            icon: 'success',
+                            confirmButtonText: 'Ok'
+                        }).then(() => {
+                            console.log("test")
+                            $('#closeCategoryModal').trigger('click');
+                        });
+                    } else {
+                        console.log("Error:", response);
+                        $(".errors").hide();
+                        $(".errors").each(function(index, element) {
+                            Object.entries(response.responseJSON.errors).forEach(error_element => {
+                                if (error_element[0] == $(element).data('field')) {
+                                    $(element).text(error_element[1]);
+                                    $(element).show();
+                                }
+                            });
+                        });
+                    }
+                    $("#old_password").val('');
+                    $("#new_password").val('');
+                    $("#confirm_password").val('');
+                    $(".errors").hide();
+                },
+                error: function(response) {
+                    console.log("Error:", response);
+                    $(".errors").hide();
+                    $(".errors").each(function(index, element) {
+                        Object.entries(response.responseJSON.errors).forEach(error_element => {
+                            if (error_element[0] == $(element).data('field')) {
+                                $(element).text(error_element[1]);
+                                $(element).show();
+                            }
+                        });
+                    });
+                }
+            });
+        }
     </script>
+    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('js/popper.min.js') }}"></script>
 @endsection
