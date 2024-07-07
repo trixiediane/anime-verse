@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Anime;
 use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
@@ -61,6 +62,19 @@ class AnimeController extends Controller
             return response()->json($result);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function byCategory(Request $request)
+    {
+        try {
+            $anime = Anime::where('category_id', $request->category_id)
+                ->get();
+
+            // return response()->json(['message' => 'Successfully retrieved the list of anime.', 'data' => $anime, 'status' => 200]);
+            return view('anime.index', ['anime' => $anime]);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'There is an error retrieving the anime under the category.', 'error' => $e->getMessage(), 'status' => 400]);
         }
     }
 }

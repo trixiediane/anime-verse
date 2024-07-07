@@ -27,6 +27,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'user'], function () {
 
 Route::group(['middleware' => 'auth', 'prefix' => 'anime'], function () {
     Route::get('/show/{id}', [AnimeController::class, 'show'])->name('anime.show');
+    Route::get('/category/anime', [AnimeController::class, 'byCategory'])->name('anime.by-category');
 });
 
 Route::group(['middleware' => 'auth', 'prefix' => 'category'], function () {

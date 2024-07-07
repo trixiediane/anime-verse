@@ -257,7 +257,7 @@
                     $("#categoryList").empty();
                     response.data.forEach(category => {
                         $("#categoryList").append(`
-                        <li class="mb-1"><a href="#">${category.name}</a></li>
+                        <li class="mb-1"><a href="{{ route('anime.by-category') }}">${category.name}</a></li>
                     `);
                     });
                 },
@@ -294,7 +294,7 @@
                             icon: 'success',
                             confirmButtonText: 'Ok'
                         }).then(() => {
-                            console.log("test")
+                            categories();
                             $('#closeCategoryModal').trigger('click');
                         });
                     } else {
