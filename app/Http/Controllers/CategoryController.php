@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCategoryRequest;
+use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Category;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class CategoryController extends Controller
 {
@@ -27,6 +29,19 @@ class CategoryController extends Controller
             return response()->json(['message' => 'Successfully retrieved list of categories.', 'data' => $categories, 'status' => 200]);
         } catch (Exception $e) {
             return response()->json(['message' => 'There is an error retrieving list of categories', 'error' => $e->getMessage(), 'status' => 400]);
+        }
+    }
+
+    public function category(Request $request)
+    {
+        try {
+
+            $category = Category::where('id', $request->category_id)
+                ->first();
+
+            return response()->json(['message' => 'Successfully retrieved category information.', 'data' => $category, 'status' => 200]);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'There is an error retrieving category information.', 'error' => $e->getMessage(), 'status' => 400]);
         }
     }
 
@@ -75,9 +90,20 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateCategoryRequest $request)
     {
-        //
+        try {
+            $category = Category::findOrFail($request->id);
+
+            $category->update([
+                'name' => $request->name,
+                'description' => $request->description
+            ]);
+
+            return response()->json(['message' => 'Successfully updated the category information.', 'data' => $category, 'status' => 200]);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'There is an error updating category information.', 'error' => $e->getMessage(), 'status' => 400]);
+        }
     }
 
     /**

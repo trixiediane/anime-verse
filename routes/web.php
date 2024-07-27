@@ -45,6 +45,9 @@ Route::group(['middleware' => 'auth', 'prefix' => 'anime'], function () {
 Route::group(['middleware' => 'auth', 'prefix' => 'category'], function () {
     Route::get('categories-list', [CategoryController::class, 'list'])->name('category.list');
     Route::resource('category', CategoryController::class);
+    Route::get('info', [CategoryController::class, 'category'])->name('category.info');
+    Route::post('category/update', [CategoryController::class, 'update'])->name('category.update');
+    // Route::resource('category', CategoryController::class);
 });
 
 // Fallback route for unmatched routes

@@ -6,13 +6,15 @@
         <!-- Card Section -->
         <div class="w-full lg:w-1/4 bg-white shadow-md rounded-lg">
             <div class="p-4">
-                <h5 class="text-lg font-semibold">{{ $category->name }}</h5>
+                <span id="categoryId" data-category-id="{{ $category->id }}"></span>
+                <h5 id="name" class="text-lg font-semibold">{{ $category->name }}</h5>
                 <hr class="my-4">
-                <p class="text-gray-700 mb-4">{{ $category->description }}</p>
+                <p id="description" class="text-gray-700 mb-4">{{ $category->description }}</p>
             </div>
             <div class="flex justify-between px-4 border-t border-gray-200 bg-gray-50">
                 <div class="flex-1 text-left">
-                    <a href="#" class="text-blue-500 hover:text-blue-700">Update Category</a>
+                    <a href="#" class="text-blue-500 hover:text-blue-700" onclick="openUpdateCategoryModal()">Update
+                        Category</a>
                 </div>
                 <div class="flex-1 text-right">
                     <a href="#" class="text-blue-500 hover:text-blue-700">Delete this Category</a>
@@ -92,23 +94,35 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="updateCategoryModal">Remove Anime from this category</h5>
+                    <h5 class="modal-title" id="updateCategoryModal">Update your Category information</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Are you sure you want to remove this anime from the category?</p>
+                    <div class="mb-3">
+                        <label for="categoryName" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="categoryName">
+                        <i id="errors" class="errors text-danger font-weight-bold" data-field="name"
+                            style="display:none"></i>
+                    </div>
+                    <div class="mb-3">
+                        <label for="categoryDescription" class="form-label">Description</label>
+                        <input type="text" class="form-control" id="categoryDescription">
+                        <i id="errors" class="errors text-danger font-weight-bold" data-field="description"
+                            style="display:none"></i>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button id="closeCategoryModal" type="button" class="btn btn-secondary"
+                    <button id="closeUpdateCategoryModal" type="button" class="btn btn-secondary"
                         data-bs-dismiss="modal">No</button>
-                    <button type="button" onclick="deleteAnime()" class="btn btn-primary">Yes</button>
+                    <button type="button" onclick="updateCategoryInfo()" class="btn btn-primary">Update</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        var categoryId = "{{ $category->id }}";
+        // var categoryId = "{{ $category->id }}";
+        var categoryId = $("#categoryId").data("category-id");
         let malId = '';
         let animeId = '';
         var id = user_data.id;
@@ -165,13 +179,97 @@
             });
         }
 
+        function openUpdateCategoryModal() {
+            // Open the modal
+            $('#updateCategoryModal').modal('show');
+            let csrf = $('meta[name="csrf-token"]').attr('content');
+
+            $.ajax({
+                type: "GET",
+                url: "{{ route('category.info') }}",
+                data: {
+                    category_id: categoryId
+                },
+                headers: {
+                    "X-CSRF-TOKEN": csrf
+                },
+                dataType: "json",
+                success: function(response) {
+                    console.log("Success:", response);
+                    $("#categoryName").val(response.data.name);
+                    $("#categoryDescription").val(response.data.description);
+                },
+                error: function(response) {
+                    console.log("Error:", response);
+                }
+            });
+        }
+
+        function updateCategoryInfo() {
+            var categoryName = $("#categoryName").val();
+            var categoryDescription = $("#categoryDescription").val();
+            let csrf = $('meta[name="csrf-token"]').attr('content');
+
+            $.ajax({
+                type: "POST",
+                url: "{{ route('category.update') }}",
+                data: {
+                    id: categoryId,
+                    name: categoryName,
+                    description: categoryDescription
+                },
+                headers: {
+                    "X-CSRF-TOKEN": csrf
+                },
+                dataType: "json",
+                success: function(response) {
+                    if (response.status == 200) {
+                        Swal.fire({
+                            title: "Success",
+                            text: response.message,
+                            icon: 'success',
+                            confirmButtonText: 'Ok'
+                        }).then(() => {
+                            $('#closeUpdateCategoryModal').trigger('click');
+                            $("#name").empty();
+                            $("#description").empty();
+                            $("#name").append(`${response.data.name}`);
+                            $("#description").append(`${response.data.description}`);
+                        });
+                    } else {
+                        console.log("Error:", response);
+                        $(".errors").hide();
+                        $(".errors").each(function(index, element) {
+                            Object.entries(response.responseJSON.errors).forEach(error_element => {
+                                if (error_element[0] == $(element).data('field')) {
+                                    $(element).text(error_element[1]);
+                                    $(element).show();
+                                }
+                            });
+                        });
+                    }
+                },
+                error: function(response) {
+                    console.log("Error:", response);
+                    $(".errors").hide();
+                    $(".errors").each(function(index, element) {
+                        Object.entries(response.responseJSON.errors).forEach(error_element => {
+                            if (error_element[0] == $(element).data('field')) {
+                                $(element).text(error_element[1]);
+                                $(element).show();
+                            }
+                        });
+                    });
+                }
+            });
+        }
+
         function updateAnime(mal_id) {
             // Set mal_id in a hidden field or data attribute in the modal if needed
             malId = mal_id;
             // Open the modal
             $('#updateAnimeModal').modal('show');
         }
-
 
         function removeAnime(animeTableId) {
             // Set mal_id in a hidden field or data attribute in the modal if needed
