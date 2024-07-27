@@ -1,122 +1,90 @@
 @extends('layouts.app')
 
-<link href="{{ asset('css/getbootstrap.css') }}" rel="stylesheet">
 @section('content')
     <div class="row">
         <div class="col-12 col-lg-12 col-xxl-9 d-flex">
             <div class="card flex-fill">
                 <div class="card-header">
-                    <a href="#" class="text-blue-500 hover:underline block mb-3" data-toggle="modal"
-                        data-target="#addAnimeModal">
-                        Add Category
-                    </a>
-                    <h5 class="card-title mb-0">Latest Projects</h5>
+                    <h5 class="card-title mb-0">List of Anime</h5>
                 </div>
                 <table class="table table-hover my-0">
                     <thead>
                         <tr>
                             <th>Name</th>
-                            <th class="d-none d-xl-table-cell">Start Date</th>
-                            <th class="d-none d-xl-table-cell">End Date</th>
-                            <th>Status</th>
-                            <th class="d-none d-md-table-cell">Assignee</th>
+                            <th>Actions</th> <!-- Only Name and Actions columns -->
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>Project Apollo</td>
-                            <td class="d-none d-xl-table-cell">01/01/2023</td>
-                            <td class="d-none d-xl-table-cell">31/06/2023</td>
-                            <td><span class="badge bg-success">Done</span></td>
-                            <td class="d-none d-md-table-cell">Vanessa Tucker</td>
-                        </tr>
-                        <tr>
-                            <td>Project Fireball</td>
-                            <td class="d-none d-xl-table-cell">01/01/2023</td>
-                            <td class="d-none d-xl-table-cell">31/06/2023</td>
-                            <td><span class="badge bg-danger">Cancelled</span></td>
-                            <td class="d-none d-md-table-cell">William Harris</td>
-                        </tr>
-                        <tr>
-                            <td>Project Hades</td>
-                            <td class="d-none d-xl-table-cell">01/01/2023</td>
-                            <td class="d-none d-xl-table-cell">31/06/2023</td>
-                            <td><span class="badge bg-success">Done</span></td>
-                            <td class="d-none d-md-table-cell">Sharon Lessman</td>
-                        </tr>
-                        <tr>
-                            <td>Project Nitro</td>
-                            <td class="d-none d-xl-table-cell">01/01/2023</td>
-                            <td class="d-none d-xl-table-cell">31/06/2023</td>
-                            <td><span class="badge bg-warning">In progress</span></td>
-                            <td class="d-none d-md-table-cell">Vanessa Tucker</td>
-                        </tr>
-                        <tr>
-                            <td>Project Phoenix</td>
-                            <td class="d-none d-xl-table-cell">01/01/2023</td>
-                            <td class="d-none d-xl-table-cell">31/06/2023</td>
-                            <td><span class="badge bg-success">Done</span></td>
-                            <td class="d-none d-md-table-cell">William Harris</td>
-                        </tr>
-                        <tr>
-                            <td>Project X</td>
-                            <td class="d-none d-xl-table-cell">01/01/2023</td>
-                            <td class="d-none d-xl-table-cell">31/06/2023</td>
-                            <td><span class="badge bg-success">Done</span></td>
-                            <td class="d-none d-md-table-cell">Sharon Lessman</td>
-                        </tr>
-                        <tr>
-                            <td>Project Romeo</td>
-                            <td class="d-none d-xl-table-cell">01/01/2023</td>
-                            <td class="d-none d-xl-table-cell">31/06/2023</td>
-                            <td><span class="badge bg-success">Done</span></td>
-                            <td class="d-none d-md-table-cell">Christina Mason</td>
-                        </tr>
-                        <tr>
-                            <td>Project Wombat</td>
-                            <td class="d-none d-xl-table-cell">01/01/2023</td>
-                            <td class="d-none d-xl-table-cell">31/06/2023</td>
-                            <td><span class="badge bg-warning">In progress</span></td>
-                            <td class="d-none d-md-table-cell">William Harris</td>
-                        </tr>
+                    <tbody id="animeTableBody">
+                        <!-- Table rows will be appended here dynamically -->
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 
-    <!-- Modal -->
-    <div class="modal fade" id="addAnimeModal" tabindex="-1" role="dialog" aria-labelledby="addAnimeModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addAnimeModalLabel">Add a Category</h5>
-                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Name</label>
-                        <input name="name" type="text" class="form-control" id="name" value="">
-                        <i id="errors" class="errors text-danger font-weight-bold" data-field="name"
-                            style="display:none"></i>
-                    </div>
-                    <div class="mb-3">
-                        <label for="description" class="form-label">Description</label>
-                        <input name="description" type="text" class="form-control" id="description" value="">
-                        <i id="errors" class="errors text-danger font-weight-bold" data-field="description"
-                            style="display:none"></i>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button id="closeCategoryModal" type="button" class="btn btn-secondary"
-                        data-dismiss="modal">Close</button>
-                    <button type="button" onclick="createCategory()" class="btn btn-primary">Add</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <script>
+        var categoryId = "{{ $categoryId }}";
+        console.log(categoryId);
+        animeList();
 
-    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('js/popper.min.js') }}"></script>
+        function animeList() {
+            var csrf = $('meta[name="csrf-token"]').attr('content');
+            $.ajax({
+                url: "{{ route('anime.user-list') }}",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    category_id: categoryId
+                },
+                success: function(response) {
+                    console.log(response);
+
+                    // Clear existing table rows
+                    $('#animeTableBody').empty();
+                    var animeShowUrl = "{{ route('anime.show', ['id' => 'id']) }}";
+                    // Populate table with anime data
+                    response.forEach(function(anime) {
+                        var detailUrl = animeShowUrl.replace('id', anime.mal_id);
+                        var row = `
+                            <tr>
+                                <td>
+                                    <a href="${detailUrl}">
+                                        ${anime.title}
+                                    </a>
+                                </td>
+                                <td class="d-flex align-items-center gap-3">
+                                    <a href="#" class="text-blue-500 hover:underline" onclick="updateAnime(${anime.mal_id})">
+                                       Update
+                                    </a>
+                                    <a href="#" class="text-red-500 hover:underline ml-2" onclick="removeAnime(${anime.mal_id})">
+                                       Remove
+                                    </a>
+                                </td>
+                            </tr>`;
+                        $('#animeTableBody').append(row);
+                    });
+                },
+                error: function(response) {
+                    console.log("error");
+                    console.log(response);
+                    Swal.fire({
+                        title: "Error",
+                        text: response.text,
+                        icon: 'error',
+                        confirmButtonText: 'Ok',
+                    });
+                }
+            });
+        }
+
+        function updateAnime(mal_id) {
+            // Handle anime update logic
+            console.log('Update anime with mal_id:', mal_id);
+        }
+
+        function removeAnime(mal_id) {
+            // Handle anime removal logic
+            console.log('Remove anime with mal_id:', mal_id);
+        }
+    </script>
 @endsection

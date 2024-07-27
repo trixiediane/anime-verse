@@ -27,12 +27,15 @@ Route::group(['middleware' => 'auth', 'prefix' => 'user'], function () {
     Route::get('profile', [UserController::class, 'index'])->name('user.index');
     Route::post('profile/{id}', [UserController::class, 'update'])->name('user.update');
     Route::get('profile/{id}', [UserController::class, 'edit'])->name('user.edit');
+
+    // Route::get('/category', [AnimeController::class, 'byCategory'])->name('anime.by-category');
+    Route::get('category/{category_id}', [UserController::class, 'byUsersCategory'])->name('user.categories');
 });
 
 Route::group(['middleware' => 'auth', 'prefix' => 'anime'], function () {
     Route::get('/show/{id}', [AnimeController::class, 'show'])->name('anime.show');
-    // Route::get('/category', [AnimeController::class, 'byCategory'])->name('anime.by-category');
-    Route::get('category/{category_id}', [AnimeController::class, 'byCategory'])->name('anime.by-category');
+
+    Route::get('/list', [AnimeController::class, 'fetchAnimeData'])->name('anime.user-list');
 
     Route::post('category/update', [AnimeController::class, 'update'])->name('anime.update');
     Route::post('category/create', [AnimeController::class, 'store'])->name('anime.store');

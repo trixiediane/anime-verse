@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateUserRequest;
+use App\Models\Category;
 use App\Models\User;
 use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -121,5 +123,24 @@ class UserController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function byUsersCategory(Request $request)
+    {
+        try {
+            $userId = auth()->id();  // Get the ID of the currently authenticated user
+
+            // Check if the category belongs to the current user
+            $category = Category::where('id', $request->category_id)
+                ->where('user_id', $userId)
+                ->firstOrFail();
+
+            return view('anime.index', ['categoryId' => $category->id]);
+        } catch (ModelNotFoundException $e) {
+            return view('auth.404');
+            // return response()->json(['message' => 'Category not found or not owned by you.', 'error' => $e->getMessage(), 'status' => 404]);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'There was an error retrieving the categories.', 'error' => $e->getMessage(), 'status' => 400]);
+        }
     }
 }

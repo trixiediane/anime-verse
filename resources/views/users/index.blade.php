@@ -261,7 +261,7 @@
                     $("#categoryList").empty();
                     response.data.forEach(category => {
                         let categoryRoute =
-                            "{{ route('anime.by-category', ['category_id' => 'category_id']) }}"
+                            "{{ route('user.categories', ['category_id' => 'category_id']) }}"
                             .replace('category_id', category.id);
                         $("#categoryList").append(
                             `<li class="mb-1"><a href="${categoryRoute}">${category.name}</a></li>`

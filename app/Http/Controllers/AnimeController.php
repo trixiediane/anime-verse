@@ -10,6 +10,7 @@ use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class AnimeController extends Controller
 {
@@ -75,25 +76,6 @@ class AnimeController extends Controller
         }
     }
 
-    public function byCategory(Request $request)
-    {
-        try {
-            $userId = auth()->id();  // Get the ID of the currently authenticated user
-
-            // Check if the category belongs to the current user
-            $category = Category::where('id', $request->category_id)
-                ->where('user_id', $userId)
-                ->firstOrFail();
-
-            return view('anime.index');
-        } catch (ModelNotFoundException $e) {
-            return view('auth.404');
-            // return response()->json(['message' => 'Category not found or not owned by you.', 'error' => $e->getMessage(), 'status' => 404]);
-        } catch (Exception $e) {
-            return response()->json(['message' => 'There was an error retrieving the anime under the category.', 'error' => $e->getMessage(), 'status' => 400]);
-        }
-    }
-
     public function store(StoreAnimeRequest $request)
     {
         try {
@@ -151,5 +133,51 @@ class AnimeController extends Controller
                 'status' => 400
             ]);
         }
+    }
+
+    public function fetchAnimeData(Request $request)
+    {
+        // Get anime IDs based on the category_id
+        $animeIds = Anime::where('category_id', $request->category_id)
+            ->pluck('anime_id'); // Assuming you have an 'anime_id' column
+
+        // Initialize Guzzle client
+        $client = new Client();
+
+        // Log::debug('Anime IDs:', $animeIds->toArray()); // Log all anime IDs
+
+        $animeData = [];
+
+        foreach ($animeIds as $id) {
+            $url = 'https://api.jikan.moe/v4/anime/' . $id . '/full';
+            // Log::debug('Fetching URL:', ['url' => $url]);
+
+            try {
+                $response = $client->get($url, ['verify' => false]);
+                $result = json_decode($response->getBody()->getContents(), true);
+
+                // Log the entire result for debugging
+                // Log::debug('API Response:', $result);
+
+                if (isset($result['data'])) {
+                    // Extract only mal_id and title
+                    $animeData[] = [
+                        'mal_id' => $result['data']['mal_id'] ?? null,
+                        'title' => $result['data']['title'] ?? null,
+                    ];
+                } else {
+                    Log::warning('No data found for anime ID:', ['id' => $id]);
+                }
+            } catch (Exception $e) {
+                // Log the exception message
+                Log::error('API request failed:', ['url' => $url, 'message' => $e->getMessage()]);
+            }
+
+            // Optional: Add delay to avoid hitting rate limits
+            sleep(1);
+        }
+
+        // Return the anime data
+        return response()->json($animeData);
     }
 }
