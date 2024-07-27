@@ -29,7 +29,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'user'], function () {
     Route::get('profile/{id}', [UserController::class, 'edit'])->name('user.edit');
 
     // Route::get('/category', [AnimeController::class, 'byCategory'])->name('anime.by-category');
-    Route::get('category/{category_id}', [UserController::class, 'byUsersCategory'])->name('user.categories');
+    Route::get('anime/category/{category_id}', [UserController::class, 'byUsersCategory'])->name('user.categories');
 });
 
 Route::group(['middleware' => 'auth', 'prefix' => 'anime'], function () {

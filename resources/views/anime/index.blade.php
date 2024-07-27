@@ -45,9 +45,29 @@
         </div>
     </div>
 
+    <div class="modal fade" id="removeAnimeModal" tabindex="-1" aria-labelledby="removeAnimeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="removeAnimeModal">Remove Anime from this category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to remove this anime from the category?</p>
+                </div>
+                <div class="modal-footer">
+                    <button id="closeCategoryModal" type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">No</button>
+                    <button type="button" onclick="deleteAnime()" class="btn btn-primary">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         var categoryId = "{{ $categoryId }}";
         let malId = '';
+        let animeId = '';
         console.log(categoryId);
         var id = user_data.id;
         animeList();
@@ -82,7 +102,7 @@
                                     <a class="text-blue-500 hover:underline" onclick="updateAnime(${anime.mal_id})">
                                        Update
                                     </a>
-                                    <a href="#" class="text-red-500 hover:underline ml-2" onclick="removeAnime(${anime.mal_id})">
+                                    <a href="#" class="text-red-500 hover:underline ml-2" onclick="removeAnime(${anime.anime_table_id})">
                                        Remove
                                     </a>
                                 </td>
@@ -106,15 +126,17 @@
         function updateAnime(mal_id) {
             // Set mal_id in a hidden field or data attribute in the modal if needed
             malId = mal_id;
-
             // Open the modal
             $('#updateAnimeModal').modal('show');
         }
 
 
-        function removeAnime(mal_id) {
-            // Handle anime removal logic
-            console.log('Remove anime with mal_id:', mal_id);
+        function removeAnime(animeTableId) {
+            // Set mal_id in a hidden field or data attribute in the modal if needed
+            animeId = animeTableId;
+            console.log(animeId);
+            // Open the modal
+            $('#removeAnimeModal').modal('show');
         }
 
         function categories() {
@@ -190,6 +212,52 @@
                                 $(element).show();
                             }
                         });
+                    });
+                }
+            });
+        }
+
+        function deleteAnime() {
+            let csrf = $('meta[name="csrf-token"]').attr('content');
+
+            $.ajax({
+                type: "DELETE",
+                url: "{{ route('anime.delete') }}",
+                headers: {
+                    "X-CSRF-TOKEN": csrf
+                },
+                data: {
+                    anime_id: animeId
+                },
+                dataType: "json",
+                success: function(response) {
+                    console.log("Success:", response);
+                    if (response.status === 200) {
+                        Swal.fire({
+                            title: "Success",
+                            text: response.message,
+                            icon: 'success',
+                            confirmButtonText: 'Ok'
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "Error",
+                            text: response.message,
+                            icon: 'error',
+                            confirmButtonText: 'Ok'
+                        });
+                    }
+                    animeList(); // Refresh the list
+                    // $('#closeCategoryModal').trigger('click');
+                    $('#removeAnimeModal').modal('hide');
+                },
+                error: function(response) {
+                    console.log("Error:", response);
+                    Swal.fire({
+                        title: "Error",
+                        text: response.message,
+                        icon: 'error',
+                        confirmButtonText: 'Ok'
                     });
                 }
             });

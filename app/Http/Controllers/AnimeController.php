@@ -138,11 +138,12 @@ class AnimeController extends Controller
         }
     }
 
-    public function destroy($animeId)
+    public function destroy(Request $request)
     {
         try {
             // Find the anime by ID or fail if not found
-            $anime = Anime::findOrFail($animeId);
+            $anime = Anime::findOrFail($request->anime_id);
+            Log::debug($anime);
 
             // Delete the anime
             $anime->delete();
@@ -168,39 +169,36 @@ class AnimeController extends Controller
 
     public function fetchAnimeData(Request $request)
     {
-        // Get anime IDs based on the category_id
-        $animeIds = Anime::where('category_id', $request->category_id)
-            ->pluck('anime_id'); // Assuming you have an 'anime_id' column
+        // Get anime IDs and their corresponding IDs from the anime table
+        $animeRecords = Anime::where('category_id', $request->category_id)
+            ->pluck('anime_id', 'id');
 
         // Initialize Guzzle client
         $client = new Client();
 
-        // Log::debug('Anime IDs:', $animeIds->toArray()); // Log all anime IDs
+        // Log::debug('Anime Records:', $animeRecords->toArray()); // Log all anime records
 
         $animeData = [];
 
-        foreach ($animeIds as $id) {
-            $url = 'https://api.jikan.moe/v4/anime/' . $id . '/full';
-            // Log::debug('Fetching URL:', ['url' => $url]);
+        foreach ($animeRecords as $animeTableId => $animeId) {
+            $url = 'https://api.jikan.moe/v4/anime/' . $animeId . '/full';
 
             try {
                 $response = $client->get($url, ['verify' => false]);
                 $result = json_decode($response->getBody()->getContents(), true);
 
-                // Log the entire result for debugging
-                // Log::debug('API Response:', $result);
-
                 if (isset($result['data'])) {
-                    // Extract only mal_id and title
+                    // Log::debug($animeTableId);
+                    // Include anime table ID in the response
                     $animeData[] = [
+                        'anime_table_id' => $animeTableId,
                         'mal_id' => $result['data']['mal_id'] ?? null,
                         'title' => $result['data']['title'] ?? null,
                     ];
                 } else {
-                    Log::warning('No data found for anime ID:', ['id' => $id]);
+                    Log::warning('No data found for anime ID:', ['anime_id' => $animeId]);
                 }
             } catch (Exception $e) {
-                // Log the exception message
                 Log::error('API request failed:', ['url' => $url, 'message' => $e->getMessage()]);
             }
 
