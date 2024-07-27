@@ -1,5 +1,6 @@
 @extends('layouts.app')
 
+<link href="{{ asset('css/getbootstrap.css') }}" rel="stylesheet">
 @section('content')
     <div class="row">
         <div class="col-12 col-lg-12 col-xxl-9 d-flex">
@@ -22,10 +23,35 @@
         </div>
     </div>
 
+    <!-- Modal -->
+    <div class="modal fade" id="updateAnimeModal" tabindex="-1" aria-labelledby="updateAnimeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateAnimeModalLabel">Update Anime Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <select id="categoryOptions" class="form-select mb-3">
+                        <!-- Options go here -->
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button id="closeCategoryModal" type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">Close</button>
+                    <button type="button" onclick="updateCategory()" class="btn btn-primary">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         var categoryId = "{{ $categoryId }}";
+        let malId = '';
         console.log(categoryId);
+        var id = user_data.id;
         animeList();
+        categories();
 
         function animeList() {
             var csrf = $('meta[name="csrf-token"]').attr('content');
@@ -53,7 +79,7 @@
                                     </a>
                                 </td>
                                 <td class="d-flex align-items-center gap-3">
-                                    <a href="#" class="text-blue-500 hover:underline" onclick="updateAnime(${anime.mal_id})">
+                                    <a class="text-blue-500 hover:underline" onclick="updateAnime(${anime.mal_id})">
                                        Update
                                     </a>
                                     <a href="#" class="text-red-500 hover:underline ml-2" onclick="removeAnime(${anime.mal_id})">
@@ -78,13 +104,97 @@
         }
 
         function updateAnime(mal_id) {
-            // Handle anime update logic
-            console.log('Update anime with mal_id:', mal_id);
+            // Set mal_id in a hidden field or data attribute in the modal if needed
+            malId = mal_id;
+
+            // Open the modal
+            $('#updateAnimeModal').modal('show');
         }
+
 
         function removeAnime(mal_id) {
             // Handle anime removal logic
             console.log('Remove anime with mal_id:', mal_id);
         }
+
+        function categories() {
+            let csrf = $('meta[name="csrf-token"]').attr('content');
+
+            $.ajax({
+                type: "GET",
+                url: "{{ route('category.list') }}",
+                data: {
+                    user_id: id
+                },
+                headers: {
+                    "X-CSRF-TOKEN": csrf
+                },
+                dataType: "json",
+                success: function(response) {
+                    // console.log("Success:", response);
+                    $("#categoryOptions").empty();
+                    response.data.forEach(category => {
+                        $("#categoryOptions").append(
+                            `<option value="${category.id}">${category.name}</option>`
+                        );
+                    });
+                },
+                error: function(response) {
+                    console.log("Error:", response);
+                }
+            });
+        }
+
+        function updateCategory() {
+            let category_id = $("#categoryOptions").val();
+            let csrf = $('meta[name="csrf-token"]').attr('content');
+
+            $.ajax({
+                type: "POST",
+                url: "{{ route('anime.update') }}",
+                headers: {
+                    "X-CSRF-TOKEN": csrf
+                },
+                data: {
+                    category_id: category_id,
+                    anime_id: malId
+                },
+                dataType: "json",
+                success: function(response) {
+                    console.log("Success:", response);
+                    if (response.status == 200) {
+                        Swal.fire({
+                            title: "Success",
+                            text: response.message,
+                            icon: 'success',
+                            confirmButtonText: 'Ok'
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "Error",
+                            text: response.message,
+                            icon: 'error',
+                            confirmButtonText: 'Ok'
+                        });
+                    }
+                    animeList();
+                    $('#closeCategoryModal').trigger('click');
+                },
+                error: function(response) {
+                    console.log("Error:", response);
+                    $(".errors").hide();
+                    $(".errors").each(function(index, element) {
+                        Object.entries(response.responseJSON.errors).forEach(error_element => {
+                            if (error_element[0] == $(element).data('field')) {
+                                $(element).text(error_element[1]);
+                                $(element).show();
+                            }
+                        });
+                    });
+                }
+            });
+        }
     </script>
+    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('js/popper.min.js') }}"></script>
 @endsection

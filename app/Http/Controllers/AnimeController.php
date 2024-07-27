@@ -79,9 +79,24 @@ class AnimeController extends Controller
     public function store(StoreAnimeRequest $request)
     {
         try {
+            $userId = auth()->id();
+            $animeId = $request->anime_id;
+            $category_id = $request->category_id;
+
+            // Check if the user already has this anime_id
+            $exists = Anime::where('user_id', $userId)
+                ->where('anime_id', $animeId)
+                ->where('category_id', $category_id)
+                ->exists();
+
+            if ($exists) {
+                return response()->json(['message' => 'This anime is already in this category!', 'status' => 400]);
+            }
+
             $animes = Anime::create([
-                'category_id' => $request->category_id,
-                'anime_id' => $request->anime_id
+                'user_id' => $userId,
+                'category_id' => $category_id,
+                'anime_id' => $animeId
             ]);
 
             return response()->json(['message' => 'Successfully added the anime in your category!', 'data' => $animes, 'status' => 200]);
@@ -91,14 +106,30 @@ class AnimeController extends Controller
     }
 
 
+
     public function update(UpdateAnimeRequest $request)
     {
         try {
-            $anime = Anime::findOrFail($request->animeId);
+            $userId = auth()->id();
+            $animeId = $request->anime_id;
+            $category_id = $request->category_id;
+
+            // Check if the user already has this anime_id
+            $exists = Anime::where('user_id', $userId)
+                ->where('anime_id', $animeId)
+                ->where('category_id', $category_id)
+                ->exists();
+
+            if ($exists) {
+                return response()->json(['message' => 'This anime is already in this category!', 'status' => 400]);
+            }
+
+            $anime = Anime::where('anime_id', $animeId)
+                ->where('user_id', $userId)
+                ->first();
 
             $animeUpdate = $anime->update([
-                'category_id' => $request->category_id,
-                'anime_id' => $request->anime_id
+                'category_id' => $request->category_id
             ]);
 
             return response()->json(['message' => 'Successfully updated the anime in your category!', 'data' => $animeUpdate, 'status' => 200]);

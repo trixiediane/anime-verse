@@ -121,19 +121,16 @@
                             text: response.message,
                             icon: 'success',
                             confirmButtonText: 'Ok'
-                        }).then(() => {
-                            $('#favouriteModal').trigger('click');
-                        });
+                        })
                     } else {
                         Swal.fire({
                             title: "Error",
                             text: response.message,
                             icon: 'error',
                             confirmButtonText: 'Ok'
-                        }).then(() => {
-                            $('#favouriteModal').trigger('click');
-                        });
+                        })
                     }
+                    $('#favouriteModal').trigger('click');
                 },
                 error: function(response) {
                     console.log("Error:", response);
@@ -142,9 +139,8 @@
                         text: response.message,
                         icon: 'error',
                         confirmButtonText: 'Ok'
-                    }).then(() => {
-                        $('#favouriteModal').trigger('click');
-                    });
+                    })
+                    $('#favouriteModal').trigger('click');
                 }
             });
         }

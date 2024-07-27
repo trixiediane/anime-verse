@@ -22,9 +22,6 @@ class UpdateAnimeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'anime_id' => [
-                'required'
-            ],
             'category_id' => [
                 'required',
                 'exists:categories,id', // Checks if the category_id exists in the categories table

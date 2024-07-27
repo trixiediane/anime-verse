@@ -301,7 +301,6 @@
                             confirmButtonText: 'Ok'
                         }).then(() => {
                             categories();
-                            $('#closeCategoryModal').trigger('click');
                         });
                     } else {
                         console.log("Error:", response);
@@ -315,6 +314,7 @@
                             });
                         });
                     }
+                    $('#closeCategoryModal').trigger('click');
                     $("#old_password").val('');
                     $("#new_password").val('');
                     $("#confirm_password").val('');
