@@ -17,7 +17,8 @@
                         Category</a>
                 </div>
                 <div class="flex-1 text-right">
-                    <a href="#" class="text-blue-500 hover:text-blue-700">Delete this Category</a>
+                    <a href="#" class="text-blue-500 hover:text-blue-700" onclick="openDeleteCategoryModal()">Delete
+                        this Category</a>
                 </div>
             </div>
         </div>
@@ -64,7 +65,7 @@
                 <div class="modal-footer">
                     <button id="closeCategoryModal" type="button" class="btn btn-secondary"
                         data-bs-dismiss="modal">Close</button>
-                    <button type="button" onclick="updateCategory()" class="btn btn-primary">Update</button>
+                    <button type="button" onclick="animeUpdate()" class="btn btn-primary">Update</button>
                 </div>
             </div>
         </div>
@@ -115,6 +116,27 @@
                     <button id="closeUpdateCategoryModal" type="button" class="btn btn-secondary"
                         data-bs-dismiss="modal">No</button>
                     <button type="button" onclick="updateCategoryInfo()" class="btn btn-primary">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deleteCategoryModal" tabindex="-1" aria-labelledby="deleteCategoryModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteCategoryModal">Delete Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to remove this category?</p>
+                    <span class="text-sm">Anime in the category will also be removed.</span>
+                </div>
+                <div class="modal-footer">
+                    <button id="closeCategoryModal" type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">No</button>
+                    <button type="button" onclick="deleteCategory()" class="btn btn-primary">Yes</button>
                 </div>
             </div>
         </div>
@@ -203,6 +225,11 @@
                     console.log("Error:", response);
                 }
             });
+        }
+
+        function openDeleteCategoryModal() {
+            // Open the modal
+            $('#deleteCategoryModal').modal('show');
         }
 
         function updateCategoryInfo() {
@@ -307,7 +334,7 @@
             });
         }
 
-        function updateCategory() {
+        function animeUpdate() {
             let category_id = $("#categoryOptions").val();
             let csrf = $('meta[name="csrf-token"]').attr('content');
 
@@ -378,6 +405,52 @@
                             text: response.message,
                             icon: 'success',
                             confirmButtonText: 'Ok'
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "Error",
+                            text: response.message,
+                            icon: 'error',
+                            confirmButtonText: 'Ok'
+                        });
+                    }
+                    animeList(); // Refresh the list
+                    // $('#closeCategoryModal').trigger('click');
+                    $('#removeAnimeModal').modal('hide');
+                },
+                error: function(response) {
+                    console.log("Error:", response);
+                    Swal.fire({
+                        title: "Error",
+                        text: response.message,
+                        icon: 'error',
+                        confirmButtonText: 'Ok'
+                    });
+                }
+            });
+        }
+
+        function deleteCategory() {
+            let csrf = $('meta[name="csrf-token"]').attr('content');
+
+            console.log(categoryId);
+            $.ajax({
+                type: "DELETE",
+                url: "{{ route('category.destroy', ['category' => 'id']) }}".replace('id', categoryId),
+                headers: {
+                    "X-CSRF-TOKEN": csrf
+                },
+                dataType: "json",
+                success: function(response) {
+                    console.log("Success:", response);
+                    if (response.status === 200) {
+                        Swal.fire({
+                            title: "Success",
+                            text: response.message,
+                            icon: 'success',
+                            confirmButtonText: 'Ok'
+                        }).then(() => {
+                            window.location.href = "{{ route('user.index') }}";
                         });
                     } else {
                         Swal.fire({

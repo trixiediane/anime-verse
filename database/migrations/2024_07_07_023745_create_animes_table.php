@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('animes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
-            $table->foreignId('category_id')->constrained();
+            $table->foreignId('category_id')
+                ->constrained()
+                ->onDelete('cascade');
             $table->string('anime_id');
             $table->timestamps();
         });
