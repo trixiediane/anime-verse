@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Anime;
+use App\Models\Category;
 use Exception;
 use GuzzleHttp\Client;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
 class AnimeController extends Controller
@@ -68,13 +70,23 @@ class AnimeController extends Controller
     public function byCategory(Request $request)
     {
         try {
+            $userId = auth()->id();  // Get the ID of the currently authenticated user
+
+            // Check if the category belongs to the current user
+            $category = Category::where('id', $request->category_id)
+                ->where('user_id', $userId)
+                ->firstOrFail();
+
+            // Retrieve anime that belongs to the category
             $anime = Anime::where('category_id', $request->category_id)
                 ->get();
 
-            // return response()->json(['message' => 'Successfully retrieved the list of anime.', 'data' => $anime, 'status' => 200]);
             return view('anime.index', ['anime' => $anime]);
+        } catch (ModelNotFoundException $e) {
+            return view('auth.404');
+            // return response()->json(['message' => 'Category not found or not owned by you.', 'error' => $e->getMessage(), 'status' => 404]);
         } catch (Exception $e) {
-            return response()->json(['message' => 'There is an error retrieving the anime under the category.', 'error' => $e->getMessage(), 'status' => 400]);
+            return response()->json(['message' => 'There was an error retrieving the anime under the category.', 'error' => $e->getMessage(), 'status' => 400]);
         }
     }
 }

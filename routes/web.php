@@ -9,6 +9,10 @@ Route::get('/', function () {
     return view('auth/login');
 });
 
+Route::get('/404', function () {
+    return view('auth/404');
+});
+
 Auth::routes();
 
 
@@ -27,7 +31,8 @@ Route::group(['middleware' => 'auth', 'prefix' => 'user'], function () {
 
 Route::group(['middleware' => 'auth', 'prefix' => 'anime'], function () {
     Route::get('/show/{id}', [AnimeController::class, 'show'])->name('anime.show');
-    Route::get('/category/anime', [AnimeController::class, 'byCategory'])->name('anime.by-category');
+    // Route::get('/category', [AnimeController::class, 'byCategory'])->name('anime.by-category');
+    Route::get('category/{category_id}', [AnimeController::class, 'byCategory'])->name('anime.by-category');
 });
 
 Route::group(['middleware' => 'auth', 'prefix' => 'category'], function () {

@@ -5,8 +5,8 @@
     <div class="container-fluid p-0">
         <div class="mb-3">
             <h1 class="h3 d-inline align-middle">Profile</h1>
-            <a class="badge bg-dark text-white ms-2" href="upgrade-to-pro.html">
-                Get more page examples
+            <a class="badge bg-dark text-white ms-2" href="{{route('home')}}">
+                Return to the Main page
             </a>
         </div>
         <div class="row">
@@ -28,17 +28,18 @@
                         </div>
                     </div>
                     <hr class="my-0" />
-                    <div class="card-body">
-                        <a href="" class="card-link float-md-end mb-3" data-toggle="modal"
+                    <div class="p-4">
+                        <a href="#" class="text-blue-500 hover:underline block mb-3" data-toggle="modal"
                             data-target="#addCategoryModal">
                             Add Category
                         </a>
-                        <h5 class="h6 card-title">My Categories
-                        </h5>
-                        <ul id="categoryList" class="list-unstyled mb-0">
-                            {{-- <li class="mb-1"><a href="#">staciehall.co</a></li> --}}
+                        <hr class="my-2 border-gray-300">
+                        <h5 class="text-lg font-semibold mt-3">My Categories</h5>
+                        <ul id="categoryList" class="list-none mb-0 mt-2">
+                            <!-- Category items go here -->
                         </ul>
                     </div>
+
                 </div>
             </div>
 
@@ -256,9 +257,12 @@
                     console.log("Success:", response);
                     $("#categoryList").empty();
                     response.data.forEach(category => {
-                        $("#categoryList").append(`
-                        <li class="mb-1"><a href="{{ route('anime.by-category') }}">${category.name}</a></li>
-                    `);
+                        let categoryRoute =
+                            "{{ route('anime.by-category', ['category_id' => 'category_id']) }}"
+                            .replace('category_id', category.id);
+                        $("#categoryList").append(
+                            `<li class="mb-1"><a href="${categoryRoute}">${category.name}</a></li>`
+                        );
                     });
                 },
                 error: function(response) {
@@ -266,7 +270,6 @@
                 }
             });
         }
-
 
         function createCategory() {
             let name = $("#name").val();
