@@ -32,7 +32,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <select id="categoryOptions" class="form-select mb-3">
+                    <select id="categoryOptions" class="form-select mb-3 w-full sm:w-3/4 md:w-1/2 lg:w-1/3">
                         <!-- Options go here -->
                     </select>
                 </div>
