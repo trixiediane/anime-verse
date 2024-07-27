@@ -1,6 +1,6 @@
 # Anime Verse
 
-Anime Verse is a Laravel-based web application for exploring and managing anime series. This project allows users to search for anime, view details, and manage their watchlist.
+Anime Verse is a Laravel-based web application for exploring and managing anime series. This project allows users to search for anime, view details, and manage their watchlist. It also utilizes jQuery and AJAX to enhance user interaction and provide a dynamic experience.
 
 ## Features
 
