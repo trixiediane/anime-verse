@@ -16,6 +16,7 @@ Anime Verse is a Laravel-based web application for exploring and managing anime 
 - PHP >= 8.0
 - Composer
 - Laravel
+- Node.js and npm
 
 ### Getting Started
 
@@ -26,13 +27,19 @@ Anime Verse is a Laravel-based web application for exploring and managing anime 
     cd anime-verse
     ```
 
-2. **Install Dependencies:**
+2. **Install PHP Dependencies:**
 
     ```bash
     composer install
     ```
 
-3. **Create a `.env` File:**
+3. **Install JavaScript Dependencies:**
+
+    ```bash
+    npm install
+    ```
+
+4. **Create a `.env` File:**
 
     ```bash
     cp .env.example .env
@@ -40,25 +47,31 @@ Anime Verse is a Laravel-based web application for exploring and managing anime 
 
     Update the `.env` file with your database and other environment settings.
 
-4. **Generate Application Key:**
+5. **Generate Application Key:**
 
     ```bash
     php artisan key:generate
     ```
 
-5. **Run Migrations:**
+6. **Run Migrations:**
 
     ```bash
     php artisan migrate
     ```
 
-6. **Seed the Database (optional):**
+7. **Seed the Database (optional):**
 
     ```bash
     php artisan db:seed
     ```
 
-7. **Start the Development Server:**
+8. **Compile Assets:**
+
+    ```bash
+    npm run dev
+    ```
+
+9. **Start the Development Server:**
 
     ```bash
     php artisan serve
@@ -82,12 +95,10 @@ Contributions are welcome! Please follow these steps to contribute:
 4. Push to the branch (`git push origin feature/YourFeature`).
 5. Create a new Pull Request.
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## Acknowledgments
 
 - Laravel - The PHP framework used for this application.
-- [Anime API](https://example.com) - Provides anime data (replace with actual source).
-
+- Bootstrap - The open-source front-end framework.
+- [Anime API](https://docs.api.jikan.moe/)
+- [AdminKit](https://demo.adminkit.io/)
+- [GetBootstrap](https://getbootstrap.com/)
