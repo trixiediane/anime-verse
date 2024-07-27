@@ -15,7 +15,7 @@
                             <!-- Move the button to the top right -->
                             <div class="float-md-end mb-3">
                                 <a href="" class="card-link" data-toggle="modal" data-target="#favouriteModal">
-                                    Launch demo modal
+                                    Add to Category
                                 </a>
                             </div>
                             <h5 class="card-title mt-4">{{ $anime['title'] }}</h5>
@@ -80,15 +80,75 @@
                     <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <!-- Modal body content here -->
+                    <label class="form-label">Your Categories</label>
+                    <select id="categoryOptions" class="form-select mb-3">
+                        @foreach ($categories as $category)
+                            <option value="{{ $category['id'] }}">{{ $category['name'] }}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-primary" onclick="saveAnime()">Save changes</button>
                 </div>
             </div>
         </div>
     </div>
+    <script>
+        var id = user_data.id;
+
+        function saveAnime() {
+            let category_id = $('#categoryOptions').val();
+            let anime_id = "{{ $anime['mal_id'] }}";
+            let csrf = $('meta[name="csrf-token"]').attr('content');
+
+            $.ajax({
+                type: "POST",
+                url: "{{ route('anime.store') }}",
+                headers: {
+                    "X-CSRF-TOKEN": csrf
+                },
+                data: {
+                    category_id: category_id,
+                    anime_id: anime_id
+                },
+                dataType: "json",
+                success: function(response) {
+                    // console.log("Success:", response);
+                    if (response.status == 200) {
+                        Swal.fire({
+                            title: "Success",
+                            text: response.message,
+                            icon: 'success',
+                            confirmButtonText: 'Ok'
+                        }).then(() => {
+                            $('#favouriteModal').trigger('click');
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "Error",
+                            text: response.message,
+                            icon: 'error',
+                            confirmButtonText: 'Ok'
+                        }).then(() => {
+                            $('#favouriteModal').trigger('click');
+                        });
+                    }
+                },
+                error: function(response) {
+                    console.log("Error:", response);
+                    Swal.fire({
+                        title: "Error",
+                        text: response.message,
+                        icon: 'error',
+                        confirmButtonText: 'Ok'
+                    }).then(() => {
+                        $('#favouriteModal').trigger('click');
+                    });
+                }
+            });
+        }
+    </script>
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('js/popper.min.js') }}"></script>
 @endsection

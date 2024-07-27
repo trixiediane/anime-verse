@@ -33,6 +33,10 @@ Route::group(['middleware' => 'auth', 'prefix' => 'anime'], function () {
     Route::get('/show/{id}', [AnimeController::class, 'show'])->name('anime.show');
     // Route::get('/category', [AnimeController::class, 'byCategory'])->name('anime.by-category');
     Route::get('category/{category_id}', [AnimeController::class, 'byCategory'])->name('anime.by-category');
+
+    Route::post('category/update', [AnimeController::class, 'update'])->name('anime.update');
+    Route::post('category/create', [AnimeController::class, 'store'])->name('anime.store');
+    Route::delete('category/remove', [AnimeController::class, 'destroy'])->name('anime.delete');
 });
 
 Route::group(['middleware' => 'auth', 'prefix' => 'category'], function () {

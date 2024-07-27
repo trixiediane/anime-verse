@@ -5,7 +5,7 @@
     <div class="container-fluid p-0">
         <div class="mb-3">
             <h1 class="h3 d-inline align-middle">Profile</h1>
-            <a class="badge bg-dark text-white ms-2" href="{{route('home')}}">
+            <a class="badge bg-dark text-white ms-2" href="{{ route('home') }}">
                 Return to the Main page
             </a>
         </div>
@@ -15,17 +15,11 @@
                     <div class="card-header">
                         <h5 class="card-title mb-0">Profile Details</h5>
                     </div>
-                    <div class="card-body text-center">
-                        <img src="{{ asset('storage/' . $user->profile_picture) }}" alt="Christina Mason"
+                    <div id="userInfo" class="card-body text-center">
+                        <img id="profilePicture" src="{{ asset('storage/' . $user->profile_picture) }}" alt="User"
                             class="img-fluid rounded-circle mb-2" width="128" height="128" />
-                        <h5 class="card-title mb-0">{{ $user->username }}</h5>
-                        <div class="text-muted mb-2">{{ $user->email }}</div>
-
-                        <div>
-                            {{-- <a class="btn btn-primary btn-sm" href="#">Follow</a> --}}
-                            {{-- <a class="btn btn-primary btn-sm" href="#"><span data-feather="message-square"></span>
-                                Message</a> --}}
-                        </div>
+                        <h5 id="displayUsername" class="card-title mb-0">{{ $user->username }}</h5>
+                        <div id="displayEmail" class="text-muted mb-2">{{ $user->email }}</div>
                     </div>
                     <hr class="my-0" />
                     <div class="p-4">
@@ -135,6 +129,9 @@
     </div>
     <script>
         var id = user_data.id;
+        var displayUsername = '';
+        var displayEmail = '';
+        var profilePicture = '';
         editUser();
         categories();
 
@@ -183,6 +180,12 @@
                         }).then(() => {
                             editUser(id);
                         });
+                        $("#userInfo").empty();
+                        $("#userInfo").append(`
+                            <img id="profilePicture" src="{{ asset('storage/') }}/${response.data.profile_picture}" alt="User" class="img-fluid rounded-circle mb-2" width="128" height="128" />
+                            <h5 id="displayUsername" class="card-title mb-0">${response.data.username}</h5>
+                            <div id="displayEmail" class="text-muted mb-2">${response.data.email}</div>
+                        `);
                     } else {
                         console.log("Error:", response);
                         $(".errors").hide();
