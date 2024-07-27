@@ -135,7 +135,7 @@ class UserController extends Controller
                 ->where('user_id', $userId)
                 ->firstOrFail();
 
-            return view('anime.index', ['categoryId' => $category->id]);
+            return view('anime.index', ['category' => $category]);
         } catch (ModelNotFoundException $e) {
             return view('auth.404');
             // return response()->json(['message' => 'Category not found or not owned by you.', 'error' => $e->getMessage(), 'status' => 404]);

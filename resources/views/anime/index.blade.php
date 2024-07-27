@@ -2,26 +2,49 @@
 
 <link href="{{ asset('css/getbootstrap.css') }}" rel="stylesheet">
 @section('content')
-    <div class="row">
-        <div class="col-12 col-lg-12 col-xxl-9 d-flex">
-            <div class="card flex-fill">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">List of Anime</h5>
+    <div class="flex flex-col lg:flex-row gap-4 p-4">
+        <!-- Card Section -->
+        <div class="w-full lg:w-1/4 bg-white shadow-md rounded-lg">
+            <div class="p-4">
+                <h5 class="text-lg font-semibold">{{ $category->name }}</h5>
+                <hr class="my-4">
+                <p class="text-gray-700 mb-4">{{ $category->description }}</p>
+            </div>
+            <div class="flex justify-between px-4 border-t border-gray-200 bg-gray-50">
+                <div class="flex-1 text-left">
+                    <a href="#" class="text-blue-500 hover:text-blue-700">Update Category</a>
                 </div>
-                <table class="table table-hover my-0">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Actions</th> <!-- Only Name and Actions columns -->
-                        </tr>
-                    </thead>
-                    <tbody id="animeTableBody">
-                        <!-- Table rows will be appended here dynamically -->
-                    </tbody>
-                </table>
+                <div class="flex-1 text-right">
+                    <a href="#" class="text-blue-500 hover:text-blue-700">Delete this Category</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Anime Table Section -->
+        <div class="flex-1 lg:w-3/4">
+            <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                {{-- <div class="p-4 border-b border-gray-200">
+                    <h5 class="text-lg font-semibold">List of Anime</h5>
+                </div> --}}
+                <div class="overflow-x-auto">
+                    <table class="min-w-full mx-auto divide-y divide-gray-200">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Name</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="animeTableBody" class="bg-white divide-y divide-gray-200">
+                            <!-- Table rows will be appended here dynamically -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
+
 
     <!-- Modal -->
     <div class="modal fade" id="updateAnimeModal" tabindex="-1" aria-labelledby="updateAnimeModalLabel" aria-hidden="true">
@@ -64,11 +87,30 @@
         </div>
     </div>
 
+    <div class="modal fade" id="updateCategoryModal" tabindex="-1" aria-labelledby="updateCategoryModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateCategoryModal">Remove Anime from this category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to remove this anime from the category?</p>
+                </div>
+                <div class="modal-footer">
+                    <button id="closeCategoryModal" type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">No</button>
+                    <button type="button" onclick="deleteAnime()" class="btn btn-primary">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        var categoryId = "{{ $categoryId }}";
+        var categoryId = "{{ $category->id }}";
         let malId = '';
         let animeId = '';
-        console.log(categoryId);
         var id = user_data.id;
         animeList();
         categories();
@@ -98,13 +140,13 @@
                                         ${anime.title}
                                     </a>
                                 </td>
-                                <td class="d-flex align-items-center gap-3">
-                                    <a class="text-blue-500 hover:underline" onclick="updateAnime(${anime.mal_id})">
-                                       Update
-                                    </a>
-                                    <a href="#" class="text-red-500 hover:underline ml-2" onclick="removeAnime(${anime.anime_table_id})">
-                                       Remove
-                                    </a>
+                                <td class="d-flex align-items-center justify-content-start gap-2">
+                                    <button class="btn btn-link text-primary" onclick="updateAnime(${anime.mal_id})">
+                                        Update
+                                    </button>
+                                    <button class="btn btn-link text-danger" onclick="removeAnime(${anime.anime_table_id})">
+                                        Remove
+                                    </button>
                                 </td>
                             </tr>`;
                         $('#animeTableBody').append(row);

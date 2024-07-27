@@ -46,3 +46,8 @@ Route::group(['middleware' => 'auth', 'prefix' => 'category'], function () {
     Route::get('categories-list', [CategoryController::class, 'list'])->name('category.list');
     Route::resource('category', CategoryController::class);
 });
+
+// Fallback route for unmatched routes
+Route::fallback(function () {
+    return redirect('/404');
+});
