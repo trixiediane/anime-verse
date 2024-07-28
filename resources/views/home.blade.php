@@ -4,7 +4,7 @@
     <div class="container-fluid p-0">
         <div class="mb-3">
             <h1 class="h3 d-inline align-middle">Top Anime</h1>
-            <a class="badge bg-dark text-white ms-2" href="upgrade-to-pro.html">
+            <a class="badge bg-dark text-white ms-2" href="https://myanimelist.net/">
                 from MyAnimeList
             </a>
         </div>

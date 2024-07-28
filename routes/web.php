@@ -40,6 +40,12 @@ Route::group(['middleware' => 'auth', 'prefix' => 'anime'], function () {
     Route::post('category/update', [AnimeController::class, 'update'])->name('anime.update');
     Route::post('category/create', [AnimeController::class, 'store'])->name('anime.store');
     Route::delete('category/remove', [AnimeController::class, 'destroy'])->name('anime.delete');
+
+    Route::get('/search/view', [AnimeController::class, 'searchView'])->name('anime.search-view');
+    Route::get('/search', [AnimeController::class, 'search'])->name('anime.search');
+
+    Route::get('/characters/view', [AnimeController::class, 'characterView'])->name('anime.character-view');
+    Route::get('/characters/search', [AnimeController::class, 'searchCharacters'])->name('anime.characters');
 });
 
 Route::group(['middleware' => 'auth', 'prefix' => 'category'], function () {

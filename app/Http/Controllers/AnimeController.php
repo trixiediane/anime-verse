@@ -209,4 +209,48 @@ class AnimeController extends Controller
         // Return the anime data
         return response()->json($animeData);
     }
+
+    public function searchView()
+    {
+        return view('anime.search');
+    }
+
+    public function characterView()
+    {
+        return view('anime.characters');
+    }
+
+    public function search(Request $request)
+    {
+        $search = $request->search;
+
+        $client = new Client();
+        $url = 'https://api.jikan.moe/v4/anime?q=' . $search;
+
+        try {
+            $response = $client->get($url, ['verify' => false]);
+            $result = json_decode($response->getBody()->getContents(), true);
+
+            return response()->json(['message' => 'Successfully searched anime!', 'data' => $result['data'], 'status' => 200]);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function searchCharacters(Request $request)
+    {
+        $search = $request->search;
+
+        $client = new Client();
+        $url = 'https://api.jikan.moe/v4/characters?q=' . $search;
+
+        try {
+            $response = $client->get($url, ['verify' => false]);
+            $result = json_decode($response->getBody()->getContents(), true);
+
+            return response()->json(['message' => 'Successfully searched anime!', 'data' => $result['data'], 'status' => 200]);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
 }

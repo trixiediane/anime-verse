@@ -70,15 +70,22 @@
 
                     <li class="sidebar-item @if (Route::is('home')) active @endif">
                         <a class="sidebar-link" href="{{ route('home') }}">
-                            <i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Top
-                                Anime</span>
+                            <i class="align-middle" data-feather="sliders"></i>
+                            <span class="align-middle">Top Anime</span>
                         </a>
                     </li>
 
-                    <li class="sidebar-item">
-                        <a class="sidebar-link" href="pages-profile.html">
-                            <i class="align-middle me-2" data-feather="search"></i><span
-                                class="align-middle">Search</span>
+                    <li class="sidebar-item @if (Route::is('anime.search-view')) active @endif">
+                        <a class="sidebar-link" href="{{ route('anime.search-view') }}">
+                            <i class="align-middle" data-feather="search"></i>
+                            <span class="align-middle">Search Anime</span>
+                        </a>
+                    </li>
+
+                    <li class="sidebar-item @if (Route::is('anime.character-view')) active @endif">
+                        <a class="sidebar-link" href="{{ route('anime.character-view') }}">
+                            <i class="align-middle" data-feather="user"></i>
+                            <span class="align-middle">Search Characters</span>
                         </a>
                     </li>
             </div>
