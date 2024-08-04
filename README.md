@@ -102,3 +102,7 @@ Contributions are welcome! Please follow these steps to contribute:
 - [Anime API](https://docs.api.jikan.moe/)
 - [AdminKit](https://demo.adminkit.io/)
 - [GetBootstrap](https://getbootstrap.com/)
+
+## License
+
+MIT
