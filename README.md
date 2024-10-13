@@ -1,64 +1,117 @@
-# Healthy-Fit Gym App
+# Anime Verse
 
-**Healthy-Fit Gym App** is a user-friendly web application designed to help users achieve their fitness goals. Built with **ReactJS** for a responsive and dynamic user interface, and styled using **Tailwind CSS** for a modern and sleek design, this application provides an engaging experience for fitness enthusiasts.
+Anime Verse is a Laravel-based web application for exploring and managing anime series. This project allows users to search for anime, view details, and manage their watchlist. It also utilizes jQuery and AJAX to enhance user interaction and provide a dynamic experience.
 
 ## Features
 
-- **Workout Generator:** Users can select their preferred workout type and muscle groups, allowing for customized workout plans tailored to individual fitness levels and goals.
-- **Interactive Exercise Cards:** Detailed exercise cards provide information about various workouts, including sets, reps, and muscle groups targeted.
-- **Responsive Design:** The app is fully responsive, ensuring a seamless experience on both desktop and mobile devices.
+- **Search for Anime:** Find anime series by title, genre, or other filters.
+- **View Anime Details:** Get detailed information about each anime series.
+- **Manage Watchlist:** Add and remove anime series from your personal watchlist.
+- **User Authentication:** Register and log in to manage your watchlist and settings.
 
 ## Installation
 
 ### Prerequisites
 
-- Node.js
-- npm
+- PHP >= 8.0
+- Composer
+- Laravel
+- Node.js and npm
 
 ### Getting Started
 
 1. **Clone the Repository:**
 
-    ```bash
-    git clone https://github.com/trixiediane/healthy-fit
-    cd healthy-fit
-    ```
+    
+bash
+    git clone https://github.com/trixiediane/anime-verse.git
+    cd anime-verse
 
-2. **Install Dependencies:**
 
-    ```bash
+2. **Install PHP Dependencies:**
+
+    
+bash
+    composer install
+
+
+3. **Install JavaScript Dependencies:**
+
+    
+bash
     npm install
-    ```
 
-3. **Start the Development Server:**
 
-    ```bash
+4. **Create a .env File:**
+
+    
+bash
+    cp .env.example .env
+
+
+    Update the .env file with your database and other environment settings.
+
+5. **Generate Application Key:**
+
+    
+bash
+    php artisan key:generate
+
+
+6. **Run Migrations:**
+
+    
+bash
+    php artisan migrate
+
+
+7. **Seed the Database (optional):**
+
+    
+bash
+    php artisan db:seed
+
+
+8. **Compile Assets:**
+
+    
+bash
     npm run dev
-    ```
 
-    The application will be available at `http://localhost:3000`.
+
+9. **Start the Development Server:**
+
+    
+bash
+    php artisan serve
+
+
+    The application will be available at http://localhost:8000.
 
 ## Usage
 
-- **Generate Workouts:** Select workout types and muscle groups to create customized workout plans.
-- **Track Progress:** Click the sets completed to increment the sets.
-- **Explore Exercises:** View detailed information about different exercises and their target muscle groups; You can change the sets of workout by clicking the Formulate button again.
+- **Browse Anime:** Navigate to the anime search page to start exploring.
+- **Manage Watchlist:** Log in to add or remove anime from your watchlist.
+- **View Details:** Click on any anime title to view detailed information.
 
 ## Contributing
 
 Contributions are welcome! Please follow these steps to contribute:
 
 1. Fork the repository.
-2. Create a new branch (`git checkout -b feature/YourFeature`).
-3. Commit your changes (`git commit -am 'Add new feature'`).
-4. Push to the branch (`git push origin feature/YourFeature`).
+2. Create a new branch (git checkout -b feature/YourFeature).
+3. Commit your changes (git commit -am 'Add new feature').
+4. Push to the branch (git push origin feature/YourFeature).
 5. Create a new Pull Request.
 
 ## Acknowledgments
 
-- **ReactJS** - The library used for building interactive user interfaces.
-- **Tailwind CSS** - The CSS framework for efficient styling and responsive design.
+- Laravel - The PHP framework used for this application.
+- Bootstrap - The open-source front-end framework.
+- [Anime API](https://docs.api.jikan.moe/)
+- [AdminKit](https://demo.adminkit.io/)
+- [GetBootstrap](https://getbootstrap.com/)
 
 ## License
 
-This project is licensed under the MIT License.
+MIT
